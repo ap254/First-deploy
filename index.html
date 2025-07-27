@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="no-referrer" name="referrer"/>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Medi Suggester</title>
+<link href="/manifest.json" rel="manifest"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&amp;family=Noto+Sans+Devanagari:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<script>
+let currentLink = "";
+function showModal(message, link = null) {
+  currentLink = link;
+  document.getElementById('modalText').innerText = message;
+  document.getElementById('buyPopup').style.display = 'block';
+}
+function closeModal(confirm) {
+  document.getElementById('buyPopup').style.display = 'none';
+  if (confirm && currentLink) {
+    const timestamp = Date.now();
+    const finalURL = currentLink + (currentLink.includes('?') ? '&' : '?') + 'ref=click_' + timestamp;
+    window.open(finalURL, '_blank');
+  }
+  currentLink = "";
+}
+</script><script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js">
+window.addEventListener('resize', () => {
+  document.body.style.height = window.innerHeight + 'px';
+});
+
+</script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+  height: 100%;
+  font-family: 'Noto Sans', 'Noto Sans Devanagari', Arial, sans-serif;
+  color: #000;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  transition: background-color 0.3s, color 0.3s;
+}
+    body.dark-mode { background: #121212; color: #fff; }
+    .container { display: flex; flex-direction: column; height: 100dvh; padding: 20px 20px 40px; justify-content: space-between; transition: opacity 0.3s; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; }
+    .logo-title { display: flex; align-items: center; gap: 10px; }
+    .logo { font-size: 24px; }
+    .menu { font-size: 28px; cursor: pointer; }
+    .menu-box { display: none; position: absolute; top: 60px; right: 20px; background: white; border: 1px solid #ccc; padding: 10px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); z-index: 1000; max-height: 50vh; overflow-y: auto; min-width: 150px; }
+    body.dark-mode .menu-box { background: #333; border-color: #444; color: #fff; }
+    .menu-box div { padding: 8px 10px; cursor: pointer; }
+    .menu-box div:hover { background: #f0f0f0; }
+    body.dark-mode .menu-box div:hover { background: #444; }
+    .connection-status { display: flex; align-items: center; gap: 5px; padding: 8px 10px; }
+    .connection-status span { font-size: 14px; }
+    .connection-status.online { color: #28a745; }
+    .connection-status.offline { color: #dc3545; }
+    .center { display: flex; flex-direction: column; align-items: center; }
+    .center h1 { font-size: 24px; font-weight: bold; margin-bottom: 20px; text-align: center; color: #000000 !important; }
+    .language-button { padding: 12px 24px; font-size: 16px; border: 1.5px solid #000; border-radius: 12px; background: transparent; cursor: pointer; transition: background-color 0.2s, transform 0.1s; }
+    .language-button:hover { background: #f0f0f0; transform: scale(1.05); }
+    body.dark-mode .language-button { border-color: #fff; color: #fff; }
+    body.dark-mode .language-button:hover { background: #444; }
+    .language-options { display: none; margin-top: 10px; gap: 10px; flex-direction: column; align-items: center; }
+    .language-options button { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; color: #fff; transition: transform 0.1s; }
+    .language-options button:hover { transform: scale(1.05); }
+    .lang-eng { background: orange; }
+    .lang-hing { background: #444; }
+    .lang-hin { background: green; }
+    .bottom-bar { display: flex; align-items: center; border: 1.5px solid #000; border-radius: 25px; padding: 8px 10px; gap: 6px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background-color 0.3s, border-color 0.3s; position: sticky; bottom: 0; z-index: 999; }
+    body.dark-mode .bottom-bar { border-color: #fff; background: #333; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+    .bottom-bar input { flex: 1; border: none; outline: none; padding: 8px 10px; font-size: 16px; background: transparent; color: inherit; }
+    .bottom-bar .status-icon, .bottom-bar .mic-button { display: flex; align-items: center; justify-content: center; height: 32px; width: 32px; border-radius: 8px; cursor: pointer; transition: background-color 0.2s, transform 0.1s; }
+    .bottom-bar .status-icon { font-size: 18px; background: #f0f0f0; }
+    .bottom-bar .status-icon.online { color: #28a745; }
+    .bottom-bar .status-icon.offline { color: #dc3545; }
+    .bottom-bar .mic-button { font-size: 18px; background: #e0e0e0; }
+    .bottom-bar .go-button { display: flex; align-items: center; justify-content: center; background: none; border: none; font-size: 24px; cursor: pointer; transition: transform 0.1s; padding: 0 8px; }
+    .bottom-bar .status-icon:hover, .bottom-bar .mic-button:hover, .bottom-bar .go-button:hover { transform: scale(1.05); }
+    .bottom-bar .status-icon:hover { background: #e0e0e0; }
+    .bottom-bar .mic-button:hover { background: #d0d0d0; }
+    body.dark-mode .bottom-bar .status-icon { background: #444; }
+    body.dark-mode .bottom-bar .mic-button { background: #555; }
+    body.dark-mode .bottom-bar .status-icon:hover { background: #555; }
+    body.dark-mode .bottom-bar .mic-button:hover { background: #666; }
+    .suggestions-box { display: none; position: absolute; bottom: 50px; left: 10px; right: 10px; background: white; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); z-index: 1000; max-height: 150px; overflow-y: auto; }
+    body.dark-mode .suggestions-box { background: #333; border-color: #444; color: #fff; }
+    .suggestions-box div { padding: 8px 10px; cursor: pointer; }
+    .suggestions-box div:hover { background: #f0f0f0; }
+    body.dark-mode .suggestions-box div:hover { background: #444; }
+    .output-section, .fitness-section, .reminder-section, .health-checkup-section {
+      display: none;
+      flex-direction: column;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      text-align: center;
+      transition: opacity 0.3s;
+      background: linear-gradient(rgba(245,245,245,0.9), rgba(255,255,255,0.9)), url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAB4SURBVFhH7ZbBCcAgDEQ3/v83m6gLGCkGAmkgsr2wdyY5nZ7b5I+1A4B/AOCPAAQggAACEIAABCCAAAQggAAEIACB/wx0A3D4w+EPAAAAAACAAAR8AOCfAAQggAACEIAABCCAAAQggAACEIAABCCAAAQggAD8BQUFVLb4Kz37AAAAAElFTkSuQmCC');
+      background-size: 32px 32px;
+    }
+    body.dark-mode .output-section, body.dark-mode .fitness-section, body.dark-mode .reminder-section, body.dark-mode .health-checkup-section {
+      background: linear-gradient(rgba(40,40,40,0.9), rgba(50,50,50,0.9)), url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAB4SURBVFhH7ZbBCcAgDEQ3/v83m6gLGCkGAmkgsr2wdyY5nZ7b5I+1A4B/AOCPAAQggAACEIAABCCAAAQggAAEIACB/wx0A3D4w+EPAAAAAACAAAR8AOCfAAQggAACEIAABCCAAAQggAACEIAABCCAAAQggAD8BQUFVLb4Kz37AAAAAElFTkSuQmCC');
+      background-size: 32px 32px;
+    }
+    .output-box, .fitness-box, .reminder-box, .health-checkup-box {
+      background: white;
+      background-image: linear-gradient(rgba(245,245,245,0.8), rgba(255,255,255,0.8)), url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAGElEQVQImWP4z8Dwn5GBgYGBgYGBgYGBgQEw6QbP2fJqowAAAABJRU5ErkJggg==');
+      background-size: 4px 4px;
+      border: 2px solid #28a745;
+      border-radius: 12px;
+      padding: 25px;
+      max-width: 600px;
+      width: 90%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      text-align: left;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+    body.dark-mode .output-box, body.dark-mode .fitness-box, body.dark-mode .reminder-box, body.dark-mode .health-checkup-box {
+      background: #333;
+      background-image: linear-gradient(rgba(50,50,50,0.8), rgba(60,60,60,0.8)), url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAGElEQVQImWP4z8Dwn5GBgYGBgYGBgYGBgQEw6QbP2fJqowAAAABJRU5ErkJggg==');
+      border-color: #4caf50;
+      color: #fff;
+    }
+    .output-box h3, .fitness-box h3, .reminder-box h3, .health-checkup-box h3 { font-size: 18px; margin-bottom: 8px; }
+    .output-box ul, .fitness-box ul, .reminder-box ul, .health-checkup-box ul { list-style-type: disc; margin-left: 18px; margin-bottom: 15px; }
+    .output-box ul li, .fitness-box ul li, .reminder-box ul li, .health-checkup-box ul li { font-size: 14px; }
+    .output-box p, .fitness-box p, .reminder-box p, .health-checkup-box p { font-size: 14px; margin-bottom: 15px; }
+    .output-box a, .reminder-box a, .health-checkup-box a { color: #007bff; font-size: 14px; text-decoration: none; }
+    .output-box a:hover, .reminder-box a:hover, .health-checkup-box a:hover { text-decoration: underline; }
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      padding: 8px 12px;
+      border: 1px solid #28a745;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+    .back-button:hover {
+      background: #e8f5e9;
+      transform: scale(1.05);
+    }
+    body.dark-mode .back-button {
+      background: #333;
+      border-color: #4caf50;
+      color: #fff;
+    }
+    body.dark-mode .back-button:hover {
+      background: #1b5e20;
+    }
+    .reminder-form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .reminder-form input { padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; }
+    body.dark-mode .reminder-form input { border-color: #555; background: #444; color: #fff; }
+    .reminder-form button { padding: 10px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; }
+    .reminder-form button:hover { background: #1b5e20; }
+    .reminder-list div { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #ccc; }
+    body.dark-mode .reminder-list div { border-color: #555; }
+    .reminder-list button { padding: 5px 10px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 12px; }
+    .reminder-list button:hover { background: #b02a37; }
+    .health-checkup-box .checkup-card { margin-bottom: 20px; }
+    .health-checkup-box .checkup-card h4 { font-size: 16px; font-weight: bold; margin-bottom: 10px; }
+    .health-checkup-box .checkup-card p { font-size: 14px; margin-bottom: 10px; }
+    .health-checkup-box .checkup-card a { display: inline-block; padding: 8px 16px; background: #28a745; color: white; border-radius: 8px; text-decoration: none; transition: background-color 0.2s; }
+    .health-checkup-box .checkup-card a:hover { background: #1b5e20; }
+    body.dark-mode .health-checkup-box .checkup-card a { background: #4caf50; }
+    body.dark-mode .health-checkup-box .checkup-card a:hover { background: #388e3c; }
+    .color-char-0 { color: #26a69a; }
+    .color-char-1 { color: #28a745; }
+    .color-char-2 { color: #007bff; }
+    .color-char-3 { color: #6a1b9a; }
+    .color-char-4 { color: #ef6c00; }
+    .color-char-5 { color: #d81b60; }
+    .color-char-6 { color: #00838f; }
+    .color-char-7 { color: #43a047; }
+    .color-char-8 { color: #0277bd; }
+    .color-char-9 { color: #8e24aa; }
+    .color-char-10 { color: #f4511e; }
+    .splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: linear-gradient(135deg, #40c4ff, #26a69a);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+    }
+    body.dark-mode .splash-screen {
+      background: linear-gradient(135deg, #0288d1, #00695c);
+    }
+    .splash-screen.fade-out {
+      opacity: 0;
+    }
+    .splash-content {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+    .splash-content .logo { font-size: 72px; animation: pulse 1.5s infinite ease-in-out; }
+    .splash-content h1 { font-size: 48px; font-weight: bold; }
+    .splash-content p { font-size: 24px; font-style: italic; color: #ef6c00; }
+    body.dark-mode .splash-content p { color: #ffab40; }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    .reminder-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
+      z-index: 3000;
+      justify-content: center;
+      align-items: center;
+    }
+    .reminder-modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      max-width: 80%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    body.dark-mode .reminder-modal-content {
+      background: #333;
+      color: #fff;
+    }
+    .reminder-modal-content p {
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+    .reminder-modal-content button {
+      padding: 10px 20px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .reminder-modal-content button:hover {
+      background: #1b5e20;
+    }
+    @media (max-width: 600px) {
+      .center h1 { font-size: 20px; }
+      .language-button { font-size: 14px; padding: 10px 20px; }
+      .bottom-bar { padding: 6px 8px; gap: 4px; }
+      .menu-box { right: 10px; top: 50px; width: 80%; max-width: 200px; }
+      .bottom-bar .status-icon, .bottom-bar .mic-button { height: 30px; width: 30px; }
+      .bottom-bar .go-button { font-size: 20px; padding: 0 6px; }
+      .output-box, .fitness-box, .reminder-box, .health-checkup-box { padding: 20px; max-height: 80vh; }
+      .suggestions-box { bottom: 45px; }
+      .splash-content .logo { font-size: 54px; }
+      .splash-content h1 { font-size: 36px; }
+      .splash-content p { font-size: 20px; }
+    }
+    @media (max-width: 400px) {
+      .container { padding: 10px; }
+      .center h1 { font-size: 18px; }
+      .bottom-bar { flex-wrap: wrap; gap: 3px; }
+      .bottom-bar input { font-size: 14px; }
+      .bottom-bar .status-icon, .bottom-bar .mic-button { height: 28px; width: 28px; }
+      .bottom-bar .go-button { font-size: 18px; padding: 0 5px; }
+      .output-box, .fitness-box, .reminder-box, .health-checkup-box { padding: 15px; max-height: 75vh; }
+      .suggestions-box { bottom: 40px; }
+      .splash-content .logo { font-size: 42px; }
+      .splash-content h1 { font-size: 28px; }
+      .splash-content p { font-size: 18px; }
+    }
+  
+/* ✅ Ripple effect (wave on click) */
+.ripple {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+.ripple::after {
+  content: "";
+  position: absolute;
+  background: rgba(255,255,255,0.4);
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple-animation 0.6s linear;
+  pointer-events: none;
+}
+@keyframes ripple-animation {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+.ripple:active::after {
+  top: var(--y);
+  left: var(--x);
+  width: 100px;
+  height: 100px;
+  margin-top: -50px;
+  margin-left: -50px;
+}
+
+/* ✅ Extra visual feedback (tap + hover) */
+.ripple:active {
+  transform: scale(0.96);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+.ripple:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* ✅ Smooth fade-in for sections */
+.output-section,
+.fitness-section,
+.reminder-section,
+.health-checkup-section {
+  animation: fadeInSlide 0.5s ease-in-out both;
+}
+@keyframes fadeInSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ✅ Glow effect on input focus */
+input:focus {
+  outline: none;
+  border-color: #28a745;
+  box-shadow: 0 0 8px rgba(40,167,69,0.5);
+  transition: box-shadow 0.2s ease;
+}
+/* === Animation Pack 2.0 === */
+
+/* 🎤 Mic Button Pulse */
+.mic-button.pulsing {
+  animation: mic-pulse 1s infinite;
+}
+@keyframes mic-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255,0,0,0.5); }
+  70% { box-shadow: 0 0 0 12px rgba(255,0,0,0); }
+  100% { box-shadow: 0 0 0 0 rgba(255,0,0,0); }
+}
+
+/* ⏳ Typing Dots (for chatbot or AI reply) */
+.typing-dots::after {
+  content: "...";
+  animation: dots 1.2s steps(1, end) infinite;
+}
+@keyframes dots {
+  0% { content: ""; }
+  33% { content: "."; }
+  66% { content: ".."; }
+  100% { content: "..."; }
+}
+
+/* 💬 Typing Text Animation */
+.typing-text {
+  width: fit-content;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 2px solid;
+  animation: typing 2.5s steps(40, end), blink 0.75s step-end infinite;
+}
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+@keyframes blink {
+  50% { border-color: transparent; }
+}
+
+/* 🎨 Modern Animated Dropdown */
+select {
+  background-color: white;
+  color: #000;
+  padding: 8px 12px;
+  border: 2px solid #ccc;
+  border-radius: 12px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  appearance: none;
+  outline: none;
+}
+
+select:focus {
+  border-color: #00aaff;
+  box-shadow: 0 0 8px rgba(0, 170, 255, 0.5);
+  transform: scale(1.02);
+}
+
+.buy-btn {
+  font-size: 16px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-bottom: 10px;
+  width: 100%;
+}
+.buy-btn.generic { background-color: #28a745; color: white; }
+.buy-btn.alt1 { background-color: orange; color: white; }
+.buy-btn.alt2 { background-color: gold; color: black; }
+.button-container { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.modal-content {
+  background-color: #fff;
+  margin: 20% auto;
+  padding: 20px;
+  border: 2px solid #28a745;
+  width: 90%;
+  max-width: 300px;
+  border-radius: 12px;
+  text-align: center;
+}
+.modal-content p {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+.modal-actions {
+  display: flex; justify-content: space-between; gap: 10px;
+}
+.modal-actions button {
+  padding: 10px;
+  flex: 1;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.modal-actions button:first-child {
+  background-color: #ccc;
+}
+.modal-actions button:last-child {
+  background-color: #28a745;
+  color: white;
+}
+</style>
+</meta></head>
+<body class="dark-mode">
+<div class="splash-screen" id="splashScreen">
+<div class="splash-content">
+<div class="logo">💊</div>
+<h1 id="splashTitle"></h1>
+<p>Har bimari ka sasta ilaaj!</p>
+</div>
+</div>
+<div class="container" id="mainContainer" style="display: none;">
+<div class="top-bar">
+<div class="logo-title">
+<div class="logo">💊</div>
+<h1 id="appTitle"></h1>
+</div>
+<div aria-label="Open menu" class="menu" onclick="toggleMenuBox()" onkeydown="if(event.key === 'Enter') toggleMenuBox()" role="button" tabindex="0">☰</div>
+</div>
+<div class="menu-box" id="menuBox" role="menu">
+<div class="connection-status" id="connectionStatus">
+<span id="connectionIcon">🔍</span>
+<span id="connectionText"></span>
+</div>
+<div id="menuToggleTheme" onclick="toggleTheme()" onkeydown="if(event.key === 'Enter') toggleTheme()" role="menuitem" tabindex="0">Toggle Theme</div>
+<div id="menuFitness" onclick="toggleFitness()" onkeydown="if(event.key === 'Enter') toggleFitness()" role="menuitem" tabindex="0">Fitness Goals</div>
+<div id="menuReminders" onclick="toggleReminders()" onkeydown="if(event.key === 'Enter') toggleReminders()" role="menuitem" tabindex="0">Reminders</div>
+<div id="menuHealthCheckup" onclick="toggleHealthCheckup()" onkeydown="if(event.key === 'Enter') toggleHealthCheckup()" role="menuitem" tabindex="0">Health Checkup</div>
+<div id="menuShare" onclick="shareApp()" onkeydown="if(event.key === 'Enter') shareApp()" role="menuitem" tabindex="0">Share App</div>
+<div id="menuRate" onclick="rateApp()" onkeydown="if(event.key === 'Enter') rateApp()" role="menuitem" tabindex="0">Rate on Store</div>
+<div id="menuTerms" onclick="openTerms()" onkeydown="if(event.key === 'Enter') openTerms()" role="menuitem" tabindex="0">Terms &amp; Conditions</div>
+</div>
+<div class="center">
+<h1 id="mainPrompt"></h1>
+<div aria-label="Select language" class="language-button" id="languageButton" onclick="toggleLanguages()" onkeydown="if(event.key === 'Enter') toggleLanguages()" role="button" tabindex="0">▾ Language</div>
+<div class="language-options" id="languageOptions">
+<button class="lang-eng" id="langEng">English</button>
+<button class="lang-hing" id="langHing">Hinglish</button>
+<button class="lang-hin" id="langHin">Hindi</button>
+</div>
+</div>
+<div class="bottom-bar">
+<span class="status-icon" id="statusIcon">🔍</span>
+<input aria-label="Search input" autocomplete="off" id="searchInput" oninput="debouncedShowSuggestions()" onkeydown="if(event.key === 'Enter') searchAction()" type="text"/>
+<div class="suggestions-box" id="suggestionsBox"></div>
+<span aria-label="Start speech recognition" class="mic-button" onclick="startListening()" onkeydown="if(event.key === 'Enter') startListening()" role="button" tabindex="0">🎙</span>
+<button aria-label="Search" class="go-button" id="goButton" onclick="searchAction()">⬆️</button>
+</div>
+</div>
+<div class="output-section" id="outputSection">
+<button aria-label="Back" class="back-button" id="backButton" onclick="goBack()">⬅ Back</button>
+<h2 id="outputHeader"></h2>
+<div class="output-box" id="outputText"></div>
+</div>
+<div class="fitness-section" id="fitnessSection">
+<button aria-label="Back" class="back-button" id="fitnessBackButton" onclick="goBack()">⬅ Back</button>
+<h2 id="fitnessHeader"></h2>
+<div class="fitness-box" id="fitnessText"></div>
+</div>
+<div class="reminder-section" id="reminderSection">
+<button aria-label="Back" class="back-button" id="reminderBackButton" onclick="goBack()">⬅ Back</button>
+<h2 id="reminderHeader"></h2>
+<div class="reminder-box" id="reminderText">
+<div class="reminder-form">
+<input aria-label="Reminder text" id="reminderInput" placeholder="Enter reminder (e.g., Take Paracetamol)" type="text"/>
+<input aria-label="Reminder time" id="reminderTime" type="time"/>
+<button onclick="addReminder()">Add Reminder</button>
+</div>
+<div class="reminder-list" id="reminderList"></div>
+</div>
+</div>
+<div class="health-checkup-section" id="healthCheckupSection">
+<button aria-label="Back" class="back-button" id="healthCheckupBackButton" onclick="goBack()">⬅ Back</button>
+<h2 id="healthCheckupHeader"></h2>
+<div class="health-checkup-box" id="healthCheckupText">
+<div class="checkup-card">
+<h4>Basic Health Checkup</h4>
+<p>The Basic Health Checkup is designed for individuals seeking a comprehensive assessment of their overall health. It includes essential tests such as complete blood count, lipid profile, blood sugar, and kidney function tests to detect common health issues early.</p>
+<a href="https://bitli.in/0Rpi40W" rel="noopener noreferrer" target="_blank">Let's Checkup</a>
+</div>
+<div class="checkup-card">
+<h4>Swift Health Checkup</h4>
+<p>The Swift Health Checkup is a quick and efficient option for busy individuals. It focuses on key health indicators like blood pressure, cholesterol levels, and basic metabolic panel, providing a snapshot of your health in minimal time.</p>
+<a href="https://bitli.in/fijx0i5" rel="noopener noreferrer" target="_blank">Let's Checkup</a>
+</div>
+<div class="checkup-card">
+<h4>Standalone Test</h4>
+<p>Standalone Tests are tailored for specific health concerns, allowing you to choose individual tests like thyroid function, vitamin D levels, or liver function tests. Ideal for targeted monitoring or follow-up on known conditions.</p>
+<a href="https://bitli.in/rb6GhsA" rel="noopener noreferrer" target="_blank">Let's Checkup</a>
+</div>
+</div>
+</div>
+<div class="reminder-modal" id="reminderModal">
+<div class="reminder-modal-content">
+<p id="reminderMessage"></p>
+<button onclick="stopReminder()">Okay 👍</button>
+</div>
+</div>
+<script src="/pwa.js">
+window.addEventListener('resize', () => {
+  document.body.style.height = window.innerHeight + 'px';
+});
+
+</script>
+<script>
+    let currentLang = localStorage.getItem('language') || 'hing';
+    let medicalData = { synonyms: {}, suggestions: { en: {}, hing: {}, hi: {} } };
+    let reminders = JSON.parse(localStorage.getItem('reminders')) || [];
+    let fuse = null;
+    let ttsInterval = null;
+
+    const charColorMap = {
+      'm': 0, 'e': 1, 'd': 2, 'i': 3, 's': 4, 'u': 5, 'g': 6, 't': 7, 'r': 8, 'a': 9, ' ': 10,
+      'b': 1, 'o': 2, 'k': 3, 'y': 4, 'h': 5, 'p': 6, 'n': 7, 'v': 8, 'l': 9, 'j': 10,
+      'w': 0, 'c': 1, 'f': 2, 'z': 3, 'q': 4, 'x': 5,
+      'ब': 0, 'ट': 1, 'आ': 2, 'प': 3, 'क': 4, 'ी': 5, 'स': 6, 'म': 7, '्': 8, 'य': 9, 'ा': 10, 'ह': 0, 'ै': 1,
+    };
+    const colorClasses = [
+      'color-char-0', 'color-char-1', 'color-char-2', 'color-char-3', 'color-char-4',
+      'color-char-5', 'color-char-6', 'color-char-7', 'color-char-8', 'color-char-9',
+      'color-char-10'
+    ];
+
+    function colorizeText(text, wordBased = false) {
+      if (!wordBased) {
+        return text.split('').map(char => {
+          const lowerChar = char.toLowerCase();
+          const colorIndex = charColorMap[lowerChar] !== undefined ? charColorMap[lowerChar] : 10;
+          return `<span class="${colorClasses[colorIndex]}">${char}</span>`;
+        }).join('');
+      } else {
+        return text.split(' ').map((word, wordIndex) => {
+          const wordColorIndex = wordIndex % colorClasses.length;
+          const coloredWord = word.split('').map(char => {
+            const lowerChar = char.toLowerCase();
+            const charColorIndex = charColorMap[lowerChar] !== undefined ? charColorMap[lowerChar] : 10;
+            return `<span class="${colorClasses[charColorIndex]}">${char}</span>`;
+          }).join('');
+          return `<span class="${colorClasses[wordColorIndex]}">${coloredWord}</span>`;
+        }).join(' ');
+      }
+    }
+
+    const debounce = (func, wait) => {
+      let timeout;
+      return (...args) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func(...args), wait);
+      };
+    };
+
+    const sanitizeInput = (input) => {
+      const div = document.createElement('div');
+      div.textContent = input;
+      return div.innerHTML;
+    };
+
+    function formatTimeForSpeech(time) {
+      const [hours, minutes] = time.split(':').map(Number);
+      const period = hours >= 12 ? 'PM' : 'AM';
+      const hour12 = hours % 12 || 12;
+      return `${hour12}:${minutes.toString().padStart(2, '0')} ${period}`;
+    }
+
+    function speakReminder(text) {
+      if ('speechSynthesis' in window) {
+        const message = new SpeechSynthesisUtterance(`${text} time`);
+        message.lang = currentLang === 'hi' ? 'hi-IN' : 'en-IN';
+        message.volume = 1;
+        message.rate = 1;
+        message.pitch = 1;
+        window.speechSynthesis.speak(message);
+        return message;
+      } else {
+        console.warn('Text-to-Speech not supported, falling back to alert.');
+        alert(`Reminder: ${text}`);
+        return null;
+      }
+    }
+
+    function showReminderModal(text, time, index) {
+      const modal = document.getElementById('reminderModal');
+      const message = document.getElementById('reminderMessage');
+      message.textContent = `Reminder: ${text} at ${formatTimeForSpeech(time)}`;
+      modal.style.display = 'flex';
+      ttsInterval = setInterval(() => speakReminder(text), 5000);
+      const stopButton = document.querySelector('#reminderModal button');
+      stopButton.onclick = () => {
+        clearInterval(ttsInterval);
+        ttsInterval = null;
+        window.speechSynthesis.cancel();
+        modal.style.display = 'none';
+        reminders.splice(index, 1);
+        localStorage.setItem('reminders', JSON.stringify(reminders));
+        renderReminders();
+      };
+    }
+
+    function checkReminders() {
+      const now = new Date();
+      const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+      reminders.forEach((reminder, index) => {
+        if (reminder.time === currentTime && !reminder.triggered) {
+          reminder.triggered = true;
+          localStorage.setItem('reminders', JSON.stringify(reminders));
+          showReminderModal(reminder.text, reminder.time, index);
+        }
+      });
+    }
+
+    function showSplashScreen() {
+      const splashScreen = document.getElementById('splashScreen');
+      const mainContainer = document.getElementById('mainContainer');
+      document.getElementById('splashTitle').innerHTML = colorizeText(translations[currentLang].appTitle);
+      setTimeout(() => {
+        splashScreen.classList.add('fade-out');
+        setTimeout(() => {
+          splashScreen.style.display = 'none';
+          mainContainer.style.display = 'flex';
+          mainContainer.style.opacity = '1';
+        }, 500);
+      }, 3000);
+    }
+
+    function parseNaturalLanguage(query) {
+      const patterns = [
+        { regex: /mujhe\s+(.+?)\s+hai/i, extract: 1 },
+        { regex: /lagta\s+hai\s+(.+?)\s+ho\s+gaya/i, extract: 1 },
+        { regex: /thoda\s+(.+?)\s+feel\s+ho\s+raha/i, extract: 1 },
+        { regex: /(.+?)\s+ho\s+raha\s+lagta\s+hai/i, extract: 1 },
+        { regex: /(.+?)\s+hone\s+laga\s+hai/i, extract: 1 },
+        { regex: /mujhko\s+(.+?)\s+ho\s+gaya\s+hai/i, extract: 1 },
+        { regex: /(.+?)\s+jaisa\s+lag\s+raha\s+hai/i, extract: 1 },
+        { regex: /halke\s+se\s+(.+?)\s+ho\s+rahe\s+hain/i, extract: 1 },
+        { regex: /mujhe\s+lag\s+raha\s+(.+?)\s+hai/i, extract: 1 },
+        { regex: /(.+?)\s+se\s+pareshaan\s+hoon/i, extract: 1 },
+        { regex: /shayad\s+(.+?)\s+hai/i, extract: 1 },
+        { regex: /(.+?)\s+ka\s+asar\s+lag\s+raha/i, extract: 1 },
+        { regex: /thoda\s+thoda\s+(.+?)\s+ho\s+raha/i, extract: 1 },
+        { regex: /kal\s+se\s+(.+?)\s+ho\s+gaya/i, extract: 1 },
+        { regex: /aaj\s+subah\s+se\s+(.+?)\s+hai/i, extract: 1 },
+        { regex: /(.+?)\s+utar\s+nahi\s+raha/i, extract: 1 },
+        { regex: /(.+?)\s+bar\s+bar\s+aa\s+raha\s+hai/i, extract: 1 },
+        { regex: /(.+?)\s+ki\s+wajah\s+se\s+thakaan\s+hai/i, extract: 1 },
+        { regex: /body\s+me\s+(.+?)\s+hai/i, extract: 1 },
+        { regex: /(.+?)\s+abhi\s+bhi\s+hai/i, extract: 1 },
+        { regex: /(.+?)\s+ho\s+ke\s+chala\s+gaya\s+ab\s+fir\s+aa\s+gaya/i, extract: 1 },
+        { regex: /mujhe\s+lagta\s+hai\s+(.+?)\s+hone\s+wala\s+hai/i, extract: 1 },
+        { regex: /(.+?)\s+ka\s+doubt\s+hai/i, extract: 1 },
+        { regex: /doctor\s+ne\s+bola\s+(.+?)\s+ho\s+sakta\s+hai/i, extract: 1 },
+        { regex: /mujhe\s+strong\s+(.+?)\s+hai/i, extract: 1 },
+        { regex: /halke\s+(.+?)\s+dikh\s+rahe\s+hain/i, extract: 1 },
+        { regex: /(.+?)\s+sudden\s+start\s+hua/i, extract: 1 },
+        { regex: /(.+?)\s+2\s+din\s+se\s+hai/i, extract: 1 },
+        { regex: /bas\s+halka\s+(.+?)\s+hai/i, extract: 1 },
+        { regex: /(.+?)\s+mild\s+hai/i, extract: 1 },
+      ];
+      for (const pattern of patterns) {
+        const match = query.match(pattern.regex);
+        if (match) {
+          return match[pattern.extract].toLowerCase().trim();
+        }
+      }
+      return query.toLowerCase().trim();
+    }
+
+    async function loadMedicalData(retries = 3, delay = 2000) {
+      for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+          const response = await fetch('./data.json', { cache: 'no-store' });
+          if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+          const text = await response.text();
+          const data = JSON.parse(text);
+          if (!data.synonyms || !data.suggestions || !data.suggestions.en || !data.suggestions.hing || !data.suggestions.hi) {
+            throw new Error('Invalid data structure in medicines.json');
+          }
+          medicalData = data;
+          validateData();
+          initFuse();
+          console.log('Medical data loaded successfully.');
+          return true;
+        } catch (e) {
+          console.error(`Attempt ${attempt} failed to load medical data:`, e.message);
+          if (attempt === retries) {
+            console.error('All attempts to load medical data failed.');
+            alert(translations[currentLang].dataLoadError || 'Failed to load medical data. Please check your connection and try again.');
+            return false;
+          }
+          await new Promise(resolve => setTimeout(resolve, delay));
+        }
+      }
+    }
+
+    function initFuse() {
+      try {
+        const allTerms = [...new Set([
+          ...Object.keys(medicalData.suggestions[currentLang]).map(key => key.toLowerCase()),
+          ...Object.values(medicalData.synonyms).flat().map(syn => syn.toLowerCase()),
+          ...Object.keys(medicalData.synonyms).map(key => key.toLowerCase())
+        ])];
+        if (allTerms.length === 0) {
+          console.warn('No terms available for Fuse.js');
+          return;
+        }
+        fuse = new Fuse(allTerms, {
+          includeScore: true,
+          threshold: 0.2,
+          minMatchCharLength: 2,
+          distance: 100,
+          ignoreLocation: true,
+        });
+      } catch (e) {
+        console.error('Fuse.js initialization failed:', e);
+        alert(translations[currentLang].searchInitError || 'Failed to initialize search.');
+      }
+    }
+
+    function validateData() {
+      try {
+        const suggestionKeys = Object.keys(medicalData.suggestions[currentLang]);
+        const synonymKeys = Object.keys(medicalData.synonyms);
+        suggestionKeys.forEach(key => {
+          if (key !== 'default' && !synonymKeys.includes(key)) {
+            console.warn(`Missing synonyms for symptom: ${key}`);
+            medicalData.synonyms[key] = [];
+          }
+        });
+      } catch (e) {
+        console.error('Data validation error:', e);
+      }
+    }
+
+    function getCanonicalSymptom(query) {
+      query = query.toLowerCase().trim();
+      for (const [canonical, synonyms] of Object.entries(medicalData.synonyms)) {
+        if (synonyms.map(syn => syn.toLowerCase()).includes(query) || canonical.toLowerCase() === query) {
+          return canonical;
+        }
+      }
+      if (fuse) {
+        const results = fuse.search(query);
+        if (results.length > 0) {
+          const matchedTerm = results[0].item;
+          for (const [canonical, synonyms] of Object.entries(medicalData.synonyms)) {
+            if (synonyms.map(syn => syn.toLowerCase()).includes(matchedTerm) || canonical.toLowerCase() === matchedTerm) {
+              return canonical;
+            }
+          }
+        }
+      }
+      return query;
+    }
+
+    const translations = {
+      en: {
+        appTitle: "Medi Suggester",
+        mainPrompt: "What's your issue?",
+        languageButton: "▾ Language",
+        langEng: "English",
+        langHing: "Hinglish",
+        langHin: "Hindi",
+        menuToggleTheme: "Toggle Theme",
+        menuFitness: "Fitness Goals",
+        menuReminders: "Reminders",
+        menuHealthCheckup: "Health Checkup",
+        menuShare: "Share App",
+        menuRate: "Rate on Store",
+        menuTerms: "Terms & Conditions",
+        searchPlaceholder: "Search...",
+        goButton: "⬆️",
+        backButton: "⬅ Back",
+        outputHeader: "Your Output",
+        fitnessHeader: "Fitness Goals",
+        reminderHeader: "Reminders",
+        healthCheckupHeader: "Health Checkup",
+        reminderInputPlaceholder: "Enter reminder (e.g., Take Paracetamol)",
+        reminderTimePlaceholder: "Time",
+        addReminder: "Add",
+        emptyQuery: "Please enter a search query.",
+        emptyReminder: "Please enter a reminder.",
+        speechError: "Speech recognition error: {error}. Check microphone permissions.",
+        speechNotSupported: "Speech recognition not supported. Use Chrome or Edge.",
+        speechFailed: "Failed to start speech recognition. Check permissions.",
+        ttsNotSupported: "Text-to-Speech not supported in this browser.",
+        popupBlocked: "Popups blocked. Enable popups in browser settings.",
+        offlineMessage: "You are offline. Please connect to the internet 🔍. Consult a doctor for \"{query}\".",
+        connectionOnline: "Online",
+        connectionOffline: "Offline",
+        dataLoadError: "Failed to load medical data. Please check your connection or data.json file and try again.",
+        searchInitError: "Failed to initialize search. Please try again.",
+        noResults: "No results found for \"{query}\". Try a different term or consult a doctor.",
+        notificationDenied: "Notifications disabled. Enable them for reminders.",
+        notificationError: "Failed to enable notifications. Check browser settings."
+      },
+      hing: {
+        appTitle: "Medi Suggester",
+        mainPrompt: "Batao kya samasya hai apki?",
+        languageButton: "▾ Bhasha",
+        langEng: "English",
+        langHing: "Hinglish",
+        langHin: "Hindi",
+        menuToggleTheme: "Theme Toggle Karo",
+        menuFitness: "Fitness Goals",
+        menuReminders: "Reminders",
+        menuHealthCheckup: "Health Checkup",
+        menuShare: "App Share Karo",
+        menuRate: "Store Par Rate Karo",
+        menuTerms: "Terms aur Conditions",
+        searchPlaceholder: "Search karo...",
+        goButton: "⬆️",
+        backButton: "⬅ Wapas",
+        outputHeader: "Apka Output",
+        fitnessHeader: "Fitness Goals",
+        reminderHeader: "Reminders",
+        healthCheckupHeader: "Health Checkup",
+        reminderInputPlaceholder: "Reminder daalo (jaise, Paracetamol lo)",
+        reminderTimePlaceholder: "Samay",
+        addReminder: "Add",
+        emptyQuery: "Kripya search query daalein.",
+        emptyReminder: "Kripya reminder daalein.",
+        speechError: "Speech error: {error}. Microphone check karo.",
+        speechNotSupported: "Speech recognition nahi hai. Chrome ya Edge use karo.",
+        speechFailed: "Speech recognition start nahi hua. Permissions check karo.",
+        ttsNotSupported: "Text-to-Speech is browser mein nahi hai.",
+        popupBlocked: "Popups blocked. Browser settings mein enable karo.",
+        offlineMessage: "Aap offline ho. Internet connect karo 🔍. \"{query}\" ke liye doctor se consult karo.",
+        connectionOnline: "Online",
+        connectionOffline: "Offline",
+        dataLoadError: "Medical data load nahi hua. Connection check karo aur dobara try karo.",
+        searchInitError: "Search shuru nahi hua. Dobara try karo.",
+        noResults: "\"{query}\" ke liye kuch nahi mila. Doosra term try karo ya doctor se consult karo.",
+        notificationDenied: "Notifications band hain. Reminders ke liye enable karo.",
+        notificationError: "Notifications enable nahi hui. Browser settings check karo."
+      },
+      hi: {
+        appTitle: "मेरी दवा",
+        mainPrompt: "आपकी समस्या क्या है?",
+        languageButton: "▾ भाषा",
+        langEng: "अंग्रेजी",
+        langHing: "हिंग्लिश",
+        langHin: "हिन्दी",
+        menuToggleTheme: "थीम बदलें",
+        menuFitness: "फिटनेस लक्ष्य",
+        menuReminders: "रिमाइंडर",
+        menuHealthCheckup: "स्वास्थ्य जांच",
+        menuShare: "ऐप साझा करें",
+        menuRate: "स्टोर पर रेट करें",
+        menuTerms: "नियम और शर्तें",
+        searchPlaceholder: "खोजें...",
+        goButton: "⬆️",
+        backButton: "⬅ वापस",
+        outputHeader: "आपका आउटपुट",
+        fitnessHeader: "फिटनेस लक्ष्य",
+        reminderHeader: "रिमाइंडर",
+        healthCheckupHeader: "स्वास्थ्य जांच",
+        reminderInputPlaceholder: "रिमाइंडर दर्ज करें (उदाहरण, Paracetamol लें)",
+        reminderTimePlaceholder: "समय",
+        addReminder: "जोड़ें",
+        emptyQuery: "कृपया खोज प्रश्न दर्ज करें।",
+        emptyReminder: "कृपया रिमाइंडर दर्ज करें।",
+        speechError: "वाक् त्रुटि: {error}। माइक्रोफोन जाँचें।",
+        speechNotSupported: "वाक् पहचान समर्थित नहीं। क्रोम या एज उपयोग करें।",
+        speechFailed: "वाक् पहचान शुरू नहीं हुई। अनुमतियाँ जाँचें।",
+        ttsNotSupported: "Text-to-Speech इस ब्राउज़र में समर्थित नहीं है।",
+        popupBlocked: "पॉपअप अवरुद्ध हैं। ब्राउज़र सेटिंग्स में सक्षम करें।",
+        offlineMessage: "आप ऑफलाइन हैं। कृपया इंटरनेट से कनेक्ट करें 🔍। \"{query}\" के लिए डॉक्टर से परामर्श करें।",
+        connectionOnline: "ऑनलाइन",
+        connectionOffline: "ऑफलाइन",
+        dataLoadError: "मेडिकल डेटा लोड नहीं हुआ। कनेक्शन या data.json फाइल जाँचें और फिर से प्रयास करें।",
+        searchInitError: "खोज शुरू नहीं हुई। फिर से प्रयास करें।",
+        noResults: "\"{query}\" के लिए कोई परिणाम नहीं मिला। दूसरा शब्द आजमाएँ या डॉक्टर से परामर्श करें।",
+        notificationDenied: "नोटिफिकेशन अक्षम हैं। रिमाइंडर के लिए इन्हें सक्षम करें।",
+        notificationError: "नोटिफिकेशन सक्षम नहीं हुआ। ब्राउज़र सेटिंग्स जाँचें।"
+      }
+    };
+
+    function initTheme() {
+      if (localStorage.getItem('theme') === 'light') document.body.classList.remove('dark-mode');
+    }
+
+    function initLanguage() {
+      if (!localStorage.getItem('language')) {
+        localStorage.setItem('language', 'hing');
+        currentLang = 'hing';
+        document.getElementById('languageOptions').style.display = 'none';
+      }
+      setLanguage(currentLang);
+    }
+
+    function updateNetworkStatus() {
+      const icon = document.getElementById('statusIcon');
+      const connectionStatus = document.getElementById('connectionStatus');
+      const connectionText = document.getElementById('connectionText');
+      icon.textContent = '🔍';
+      icon.classList.toggle('online', navigator.onLine);
+      icon.classList.toggle('offline', !navigator.onLine);
+      connectionStatus.classList.toggle('online', navigator.onLine);
+      connectionStatus.classList.toggle('offline', !navigator.onLine);
+      connectionText.textContent = navigator.onLine ? translations[currentLang].connectionOnline : translations[currentLang].connectionOffline;
+    }
+
+    function updateUIText() {
+      const t = translations[currentLang];
+      document.getElementById('appTitle').innerHTML = colorizeText(t.appTitle);
+      document.getElementById('mainPrompt').innerHTML = t.mainPrompt;
+      document.getElementById('languageButton').innerText = t.languageButton;
+      document.getElementById('langEng').innerText = t.langEng;
+      document.getElementById('langHing').innerText = t.langHing;
+      document.getElementById('langHin').innerText = t.langHin;
+      document.getElementById('menuToggleTheme').innerText = t.menuToggleTheme;
+      document.getElementById('menuFitness').innerText = t.menuFitness;
+      document.getElementById('menuReminders').innerText = t.menuReminders;
+      document.getElementById('menuHealthCheckup').innerText = t.menuHealthCheckup;
+      document.getElementById('menuShare').innerText = t.menuShare;
+      document.getElementById('menuRate').innerText = t.menuRate;
+      document.getElementById('menuTerms').innerText = t.menuTerms;
+      document.getElementById('searchInput').placeholder = t.searchPlaceholder;
+      document.getElementById('goButton').innerText = t.goButton;
+      document.getElementById('backButton').innerText = t.backButton;
+      document.getElementById('outputHeader').innerHTML = colorizeText(t.outputHeader, true);
+      document.getElementById('fitnessHeader').innerHTML = colorizeText(t.fitnessHeader, true);
+      document.getElementById('fitnessBackButton').innerText = t.backButton;
+      document.getElementById('reminderHeader').innerHTML = colorizeText(t.reminderHeader, true);
+      document.getElementById('reminderBackButton').innerText = t.backButton;
+      document.getElementById('healthCheckupHeader').innerHTML = colorizeText(t.healthCheckupHeader, true);
+      document.getElementById('healthCheckupBackButton').innerText = t.backButton;
+      document.getElementById('reminderInput').placeholder = t.reminderInputPlaceholder;
+      document.getElementById('reminderTime').placeholder = t.reminderTimePlaceholder;
+      document.getElementById('reminderText').querySelector('button').innerText = t.addReminder;
+      document.getElementById('connectionText').textContent = navigator.onLine ? t.connectionOnline : translations[currentLang].connectionOffline;
+      document.title = t.appTitle;
+    }
+
+    function searchAction() {
+      try {
+        let query = sanitizeInput(document.getElementById('searchInput').value.trim());
+        if (!query) {
+          alert(translations[currentLang].emptyQuery);
+          return;
+        }
+        if (!navigator.onLine) {
+          alert(translations[currentLang].offlineMessage.replace('{query}', query));
+          return;
+        }
+        query = parseNaturalLanguage(query);
+        let canonicalQuery = getCanonicalSymptom(query);
+        const suggestionKey = currentLang === 'en' ? canonicalQuery : canonicalQuery.toLowerCase();
+        document.getElementById('mainContainer').style.opacity = '0';
+        setTimeout(() => {
+          document.getElementById('mainContainer').style.display = 'none';
+          document.getElementById('outputSection').style.display = 'flex';
+          document.getElementById('outputSection').style.opacity = '1';
+        }, 300);
+        let suggestion = medicalData.suggestions[currentLang][suggestionKey];
+        if (!suggestion) {
+          const langSpecificKeys = {
+            en: canonicalQuery,
+            hing: canonicalQuery.toLowerCase(),
+            hi: canonicalQuery.toLowerCase() === "fever" ? "बुखार" : 
+                canonicalQuery.toLowerCase() === "headache" ? "सिरदर्द" : 
+                canonicalQuery.toLowerCase()
+          };
+          suggestion = medicalData.suggestions[currentLang][langSpecificKeys[currentLang]];
+        }
+        if (!suggestion) {
+          alert(translations[currentLang].noResults.replace('{query}', query));
+          goBack();
+          return;
+        }
+        renderOutput(suggestion);
+        document.getElementById('suggestionsBox').style.display = 'none';
+      } catch (e) {
+        console.error('Search error:', e);
+        alert(translations[currentLang].searchError || 'An error occurred during search.');
+      }
+    }
+
+    function renderOutput(suggestion) {
+      try {
+        const outputText = document.getElementById('outputText');
+        outputText.innerHTML = '';
+        const safeSuggestion = {
+          generic: sanitizeInput(suggestion.generic || 'Unknown'),
+          alternatives: Array.isArray(suggestion.alternatives) ? suggestion.alternatives.map(sanitizeInput).slice(0, 5) : ['Consult a doctor'],
+          uses: Array.isArray(suggestion.uses) ? suggestion.uses.map(sanitizeInput).slice(0, 5) : ['Consult a healthcare professional'],
+          dose: sanitizeInput(suggestion.dose || 'Consult a doctor'),
+          buyNow: Array.isArray(suggestion.buyNow) ? suggestion.buyNow.map(sanitizeInput) : ['https://example.com']
+        };
+        const container = document.createElement('div');
+        const genericHeader = document.createElement('h3');
+        genericHeader.textContent = '💊 Medicine (Generic):';
+        const generic = document.createElement('p');
+        generic.textContent = safeSuggestion.generic;
+        container.appendChild(genericHeader);
+        container.appendChild(generic);
+        const altHeader = document.createElement('h3');
+        altHeader.textContent = '🔄 Alternatives Pills:';
+        const altList = document.createElement('ul');
+        safeSuggestion.alternatives.forEach(alt => {
+          const li = document.createElement('li');
+          li.textContent = alt;
+          altList.appendChild(li);
+        });
+        container.appendChild(altHeader);
+        container.appendChild(altList);
+        const usesHeader = document.createElement('h3');
+        usesHeader.textContent = '📋 Basic Uses:';
+        const usesList = document.createElement('ul');
+        safeSuggestion.uses.forEach(use => {
+          const li = document.createElement('li');
+          li.textContent = use;
+          usesList.appendChild(li);
+        });
+        container.appendChild(usesHeader);
+        container.appendChild(usesList);
+        const doseHeader = document.createElement('h3');
+        doseHeader.textContent = '💉 Dose(13-60):';
+        const dose = document.createElement('p');
+        dose.textContent = safeSuggestion.dose;
+        container.appendChild(doseHeader);
+        container.appendChild(dose);
+        const buyNowHeader = document.createElement('h3');
+buyNowHeader.textContent = '✅ Buy Now';
+const buyNowContainer = document.createElement('div');
+buyNowContainer.className = 'button-container';
+
+const buttonLabels = ['💊 Buy Generic', '🟠 Alt 1', '🟡 Alt 2'];
+const buttonClasses = ['generic', 'alt1', 'alt2'];
+
+for (let i = 0; i < 3; i++) {
+  const link = safeSuggestion.buyNow[i] || 'https://example.com';
+  const btn = document.createElement('button');
+  btn.textContent = buttonLabels[i];
+  btn.className = 'buy-btn ' + buttonClasses[i];
+  btn.onclick = () => {
+    if (link.includes('example.com')) {
+      showModal('✅️ haam ek saal ke andar andar medicine store publish karenge par abhi, ❌️ not available .');
+    } else {
+      showModal('Buy within 15 mins to support us 💰. Continue?', link);
+    }
+  };
+  buyNowContainer.appendChild(btn);
+}
+container.appendChild(buyNowHeader);
+container.appendChild(buyNowContainer);
+outputText.appendChild(container);
+      } catch (e) {
+        console.error('Render error:', e);
+        document.getElementById('outputText').innerHTML = '<p>Error rendering output. Please try again.</p>';
+      }
+    }
+
+    function toggleFitness() {
+      document.getElementById('mainContainer').style.opacity = '0';
+      setTimeout(() => {
+        document.getElementById('mainContainer').style.display = 'none';
+        document.getElementById('fitnessSection').style.display = 'flex';
+        document.getElementById('fitnessSection').style.opacity = '1';
+        renderFitness();
+      }, 300);
+      toggleMenuBox(false);
+    }
+
+    function renderFitness() {
+      const fitnessText = document.getElementById('fitnessText');
+      fitnessText.innerHTML = '';
+      const container = document.createElement('div');
+      const goalsHeader = document.createElement('h3');
+      goalsHeader.textContent = '🏃 Daily Fitness Goals';
+      const goalsList = document.createElement('ul');
+      const goals = [
+        { icon: '🚶', text: 'Walk 10,000 steps daily' },
+        { icon: '💧', text: 'Drink 10 glasses of water atleast' },
+        { icon: '🏋️', text: '30 minutes of exercise' },
+        { icon: '🛌', text: 'Sleep 7-8 hours' }
+      ];
+      goals.forEach(goal => {
+        const li = document.createElement('li');
+        li.textContent = `${goal.icon} ${goal.text}`;
+        goalsList.appendChild(li);
+      });
+      container.appendChild(goalsHeader);
+      container.appendChild(goalsList);
+      fitnessText.appendChild(container);
+    }
+
+    function toggleReminders() {
+      document.getElementById('mainContainer').style.opacity = '0';
+      setTimeout(() => {
+        document.getElementById('mainContainer').style.display = 'none';
+        document.getElementById('reminderSection').style.display = 'flex';
+        document.getElementById('reminderSection').style.opacity = '1';
+        renderReminders();
+      }, 300);
+      toggleMenuBox(false);
+    }
+
+    function toggleHealthCheckup() {
+      document.getElementById('mainContainer').style.opacity = '0';
+      setTimeout(() => {
+        document.getElementById('mainContainer').style.display = 'none';
+        document.getElementById('healthCheckupSection').style.display = 'flex';
+        document.getElementById('healthCheckupSection').style.opacity = '1';
+      }, 300);
+      toggleMenuBox(false);
+    }
+
+    function addReminder() {
+      const text = sanitizeInput(document.getElementById('reminderInput').value.trim());
+      let time = document.getElementById('reminderTime').value;
+      if (!text) {
+        alert(translations[currentLang].emptyReminder);
+        return;
+      }
+      if (!time) {
+        const now = new Date();
+        now.setHours(now.getHours() + 1, 0, 0, 0);
+        time = now.toTimeString().slice(0, 5);
+        document.getElementById('reminderTime').value = time;
+      }
+      reminders.push({ text, time, triggered: false });
+      localStorage.setItem('reminders', JSON.stringify(reminders));
+      document.getElementById('reminderInput').value = '';
+      renderReminders();
+      if ('speechSynthesis' in window) {
+        const testSpeech = new SpeechSynthesisUtterance('Test');
+        window.speechSynthesis.speak(testSpeech);
+      }
+    }
+
+    function renderReminders() {
+      const reminderList = document.getElementById('reminderList');
+      reminderList.innerHTML = '';
+      reminders.forEach((reminder, index) => {
+        const div = document.createElement('div');
+        div.textContent = `${reminder.text} at ${reminder.time}`;
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.onclick = () => {
+          reminders.splice(index, 1);
+          localStorage.setItem('reminders', JSON.stringify(reminders));
+          renderReminders();
+        };
+        div.appendChild(deleteBtn);
+        reminderList.appendChild(div);
+      });
+    }
+
+    function goBack() {
+      document.getElementById('outputSection').style.opacity = '0';
+      document.getElementById('fitnessSection').style.opacity = '0';
+      document.getElementById('reminderSection').style.opacity = '0';
+      document.getElementById('healthCheckupSection').style.opacity = '0';
+      setTimeout(() => {
+        document.getElementById('outputSection').style.display = 'none';
+        document.getElementById('fitnessSection').style.display = 'none';
+        document.getElementById('reminderSection').style.display = 'none';
+        document.getElementById('healthCheckupSection').style.display = 'none';
+        document.getElementById('mainContainer').style.display = 'flex';
+        document.getElementById('mainContainer').style.opacity = '1';
+      }, 300);
+      toggleMenuBox(false);
+    }
+
+    function toggleLanguages() {
+      const langOptions = document.getElementById('languageOptions');
+      langOptions.style.display = langOptions.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('language', lang);
+      if (recognition) {
+        recognition.lang = lang === 'hi' ? 'hi-IN' : lang === 'hing' ? 'en-IN' : 'en-IN';
+      }
+      validateData();
+      initFuse();
+      updateUIText();
+      document.getElementById('languageOptions').style.display = 'none';
+    }
+
+    function toggleMenuBox(level = null) {
+      const menu = document.getElementById('menuBox');
+      menu.style.display = level === null ? (menu.style.display === 'block' ? 'none' : 'block') : (level ? 'block' : 'none');
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+      updateNetworkStatus();
+    }
+
+    function shareApp() {
+      try {
+        if (navigator.share) {
+          navigator.share({
+            title: translations[currentLang].appTitle,
+            text: 'Check out Medi Suggester for quick medical suggestions and fitness goals!',
+            url: window.location.href
+          }).catch(err => {
+            console.error('Share error:', err);
+            alert(translations[currentLang].popupBlocked);
+          });
+        } else {
+          navigator.clipboard.writeText(window.location.href).then(() => {
+            alert(translations[currentLang].shareCopied || 'URL copied to clipboard! Share it manually.');
+          }).catch(() => {
+            alert(translations[currentLang].popupBlocked);
+          });
+        }
+      } catch (e) {
+        console.error('Share error:', e);
+        alert(translations[currentLang].shareError || 'An error occurred while sharing.');
+      }
+    }
+
+    function rateApp() {
+      try {
+        const win = window.open('https://play.google.com/store/apps/details?id=com.example.medisuggester', '_blank');
+        if (!win) {
+          alert(translations[currentLang].popupBlocked);
+        }
+      } catch (e) {
+        console.error('Rate app error:', e);
+        alert(translations[currentLang].rateError || 'An error occurred while opening the store.');
+      }
+    }
+
+    function openTerms() {
+      try {
+        const win = window.open('./terms.html', '_blank');
+        if (!win) {
+          alert(translations[currentLang].popupBlocked);
+        }
+      } catch (e) {
+        console.error('Terms error:', e);
+        alert(translations[currentLang].termsError || 'An error occurred while opening terms.');
+      }
+    }
+
+    function showSuggestions() {
+      try {
+        const input = sanitizeInput(document.getElementById('searchInput').value.trim().toLowerCase());
+        const suggestionsBox = document.getElementById('suggestionsBox');
+        suggestionsBox.innerHTML = '';
+        if (!input || !fuse) {
+          suggestionsBox.style.display = 'none';
+          return;
+        }
+        const filteredSuggestions = fuse.search(input).map(result => result.item).slice(0, 5);
+        if (filteredSuggestions.length > 0) {
+          suggestionsBox.innerHTML = filteredSuggestions.map(term => {
+            const canonical = getCanonicalSymptom(term);
+            return `<div onclick="selectSuggestion('${sanitizeInput(term).replace(/'/g, "\\'")}')">${sanitizeInput(term)}</div>`;
+          }).join('');
+          suggestionsBox.style.display = 'block';
+        } else {
+          suggestionsBox.style.display = 'none';
+        }
+      } catch (e) {
+        console.error('Suggestions error:', e);
+        document.getElementById('suggestionsBox').style.display = 'none';
+        alert(translations[currentLang].suggestionsError || 'An error occurred while showing suggestions.');
+      }
+    }
+
+    const debouncedShowSuggestions = debounce(showSuggestions, 200);
+
+    function selectSuggestion(term) {
+      try {
+        document.getElementById('searchInput').value = term;
+        document.getElementById('suggestionsBox').style.display = 'none';
+        searchAction();
+      } catch (e) {
+        console.error('Select suggestion error:', e);
+        alert(translations[currentLang].selectSuggestionError || 'An error occurred while selecting suggestion.');
+      }
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition = null;
+    if (SpeechRecognition) {
+      try {
+        recognition = new SpeechRecognition();
+        recognition.lang = currentLang === 'hi' ? 'hi-IN' : 'en-IN';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        recognition.onresult = e => {
+          try {
+            const transcript = sanitizeInput(e.results[0][0].transcript.trim());
+            document.getElementById('searchInput').value = transcript;
+            searchAction();
+          } catch (e) {
+            console.error('Speech result error:', e);
+            alert(translations[currentLang].speechError.replace('{error}', e.message));
+          }
+        };
+        recognition.onerror = e => {
+          console.error('Speech recognition error:', e.error);
+          alert(translations[currentLang].speechError.replace('{error}', e.error));
+        };
+        recognition.onend = () => console.log('Speech recognition ended.');
+      } catch (e) {
+        console.error('Speech recognition initialization failed:', e);
+        document.querySelector('.mic-button').style.display = 'none';
+        alert(translations[currentLang].speechFailed);
+      }
+    } else {
+      document.querySelector('.mic-button').style.display = 'none';
+      alert(translations[currentLang].speechNotSupported);
+    }
+
+    function startListening() {
+      try {
+        if (recognition) {
+          recognition.start();
+        } else {
+          alert(translations[currentLang].speechNotSupported);
+        }
+      } catch (e) {
+        console.error('Failed to start speech recognition:', e);
+        alert(translations[currentLang].speechFailed);
+      }
+    }
+
+    function handleOutsideInteraction(e) {
+      const menuBox = document.getElementById('menuBox');
+      const menuButton = document.querySelector('.menu');
+      const languageOptions = document.getElementById('languageOptions');
+      const languageButton = document.getElementById('languageButton');
+      if (!menuBox.contains(e.target) && !menuButton.contains(e.target)) {
+        toggleMenuBox(false);
+      }
+      if (!languageOptions.contains(e.target) && !languageButton.contains(e.target)) {
+        languageOptions.style.display = 'none';
+      }
+    }
+
+    window.onload = async () => {
+      try {
+        await loadMedicalData();
+        updateNetworkStatus();
+        initTheme();
+        initLanguage();
+        updateUIText();
+        showSplashScreen();
+        setInterval(checkReminders, 60000); // Check reminders every minute
+        if ('speechSynthesis' in window) {
+          const testSpeech = new SpeechSynthesisUtterance('');
+          window.speechSynthesis.speak(testSpeech);
+          window.speechSynthesis.cancel();
+        }
+        document.querySelector('.lang-eng').addEventListener('click', () => setLanguage('en'));
+        document.querySelector('.lang-hing').addEventListener('click', () => setLanguage('hing'));
+        document.querySelector('.lang-hin').addEventListener('click', () => setLanguage('hi'));
+        window.addEventListener('online', updateNetworkStatus);
+        window.addEventListener('offline', updateNetworkStatus);
+        document.addEventListener('click', handleOutsideInteraction);
+        document.addEventListener('touchstart', handleOutsideInteraction);
+      } catch (e) {
+        console.error('Initialization error:', e);
+        alert(translations[currentLang].initError || 'An error occurred during initialization.');
+      }
+    };
+  
+window.addEventListener('resize', () => {
+  document.body.style.height = window.innerHeight + 'px';
+});
+
+</script>
+<script>
+document.addEventListener('click', function(e) {
+  const target = e.target.closest('.ripple');
+  if (target) {
+    const rect = target.getBoundingClientRect();
+    target.style.setProperty('--x', `${e.clientX - rect.left}px`);
+    target.style.setProperty('--y', `${e.clientY - rect.top}px`);
+  }
+});
+<script>
+  function getBuyNowLink(links, index) {
+    if (!Array.isArray(links) || !links[index]) {
+      return null;
+    }
+    const ts = new Date().getTime();
+    const link = links[index];
+    return link.includes("?")
+      ? `${link}&ref=click_${ts}`
+      : `${link}?ref=click_${ts}`;
+  }
+
+  function openBuyNow(symptom, lang, which) {
+    // `which` = 0 for generic, 1 or 2 for alternatives
+    fetch('data.json')
+      .then(res => res.json())
+      .then(data => {
+        const medData = data.suggestions?.[lang]?.[symptom];
+        if (!medData) {
+          alert("Medicine not found.");
+          return;
+        }
+
+        const link = getBuyNowLink(medData.buyNow, which);
+        if (!link) {
+          alert("Link not found.");
+          return;
+        }
+
+        const confirmMsg = "Buy within 15 mins to support us 💰. Continue?";
+        if (confirm(confirmMsg)) {
+          window.open(link, "_blank");
+        }
+      })
+      .catch(() => alert("Data load failed"));
+  }
+</script>
+
+
+<!-- Custom Buy Confirmation Modal -->
+<div class="modal" id="buyPopup">
+<div class="modal-content">
+<p id="modalText"></p>
+<div class="modal-actions">
+<button onclick="closeModal(false)">Cancel</button>
+<button onclick="closeModal(true)">OK</button>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy - Medi Suggester</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Roboto', sans-serif; color: #333; background: #f5f5f5;
+      line-height: 1.6; padding: 20px; margin: 0; transition: background 0.3s, color 0.3s;
+    }
+    .container {
+      max-width: 900px; margin: 0 auto; background: #fff; padding: 24px;
+      border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h1 { font-size: 2.2rem; color: #4CAF50; margin-bottom: 16px; font-weight: 700; text-align: center; }
+    .last-updated { font-size: 0.95rem; color: #666; text-align: center; margin-bottom: 20px; }
+    body.dark-mode { background: #121212; color: #fff; }
+    body.dark-mode .container { background: #1e1e1e; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    body.dark-mode h1 { color: #81C784; }
+    body.dark-mode .last-updated { color: #bbb; }
+
+    /* Accordion Sections */
+    .section { margin-bottom: 12px; }
+    .section-header {
+      display: flex; align-items: center; gap: 12px; padding: 16px; background: #f9f9f9;
+      border-radius: 8px; cursor: pointer; transition: background 0.2s;
+    }
+    .section-header:hover { background: #e8f5e9; }
+    body.dark-mode .section-header { background: #2a2a2a; }
+    body.dark-mode .section-header:hover { background: #388E3C; }
+    .section-header h2 {
+      font-size: 1.3rem; font-weight: 500; color: #333; flex: 1;
+    }
+    body.dark-mode .section-header h2 { color: #fff; }
+    .play-icon {
+      font-size: 1.2rem; color: #4CAF50; transition: transform 0.3s;
+    }
+    .play-icon.open { transform: rotate(90deg); }
+    body.dark-mode .play-icon { color: #81C784; }
+    .section-content {
+      display: none; padding: 16px; background: #fff; border-radius: 0 0 8px 8px;
+      border-top: 1px solid #ddd; animation: slideIn 0.3s ease-out;
+      overflow: hidden;
+    }
+    body.dark-mode .section-content { background: #1e1e1e; border-color: #555; }
+    @keyframes slideIn {
+      from { max-height: 0; opacity: 0; }
+      to { max-height: 1000px; opacity: 1; }
+    }
+    .section-content p, .section-content li { font-size: 1rem; margin-bottom: 12px; }
+    .section-content ul { margin-left: 20px; list-style-type: disc; }
+    .section-content a { color: #4CAF50; text-decoration: none; }
+    .section-content a:hover { text-decoration: underline; }
+    body.dark-mode .section-content a { color: #81C784; }
+    .subsection { margin-top: 12px; }
+    .subsection h3 { font-size: 1.1rem; font-weight: 500; margin-bottom: 8px; }
+
+    /* Back Link and Contact Form */
+    .back-link {
+      display: inline-block; margin: 20px 0; font-size: 1rem; color: #4CAF50;
+    }
+    .back-link:hover { text-decoration: underline; }
+    body.dark-mode .back-link { color: #81C784; }
+    .contact-form {
+      margin-top: 24px; padding: 16px; background: #f9f9f9; border-radius: 8px;
+    }
+    body.dark-mode .contact-form { background: #2a2a2a; }
+    .contact-form h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .contact-form input, .contact-form textarea {
+      width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ddd;
+      border-radius: 8px; font-size: 1rem;
+    }
+    body.dark-mode .contact-form input, body.dark-mode .contact-form textarea {
+      border-color: #555; background: #333; color: #fff;
+    }
+    .contact-form button {
+      padding: 12px 24px; background: #4CAF50; color: #fff; border: none;
+      border-radius: 8px; font-size: 1rem; cursor: pointer; transition: background 0.2s;
+    }
+    .contact-form button:hover { background: #388E3C; }
+
+    /* Media Queries */
+    @media (max-width: 600px) {
+      .container { padding: 16px; }
+      h1 { font-size: 1.8rem; }
+      .section-header h2 { font-size: 1.2rem; }
+      .section-content p, .section-content li { font-size: 0.95rem; }
+      .subsection h3 { font-size: 1rem; }
+    }
+    @media (max-width: 400px) {
+      .container { padding: 12px; }
+      h1 { font-size: 1.6rem; }
+      .section-header h2 { font-size: 1.1rem; }
+      .play-icon { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Privacy Policy</h1>
+    <p class="last-updated">Last Updated: June 21, 2025</p>
+    <a href="mrkz123_updated_final_alt_fix.html" class="back-link">← Back to App</a>
+    <a href="terms.html" class="back-link" style="margin-left: 20px;">View Terms & Conditions</a>
+
+    <!-- Section 1: Introduction -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>1. Introduction</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>1.1 Overview</h3>
+          <p>Medi Suggester ("App") is committed to protecting your privacy. This Privacy Policy explains how [Your Company Name], a company registered under the Companies Act, 2013, in India, collects, uses, stores, and protects your personal data when you use our App.</p>
+        </div>
+        <div class="subsection">
+          <h3>1.2 Scope</h3>
+          <p>This policy applies to all users of the App, including its medicine suggestion, reminder, and chatbot features. By using the App, you consent to our data practices, as outlined below.</p>
+        </div>
+        <div class="subsection">
+          <h3>1.3 Compliance</h3>
+          <p>We comply with the Information Technology Act, 2000, IT Rules, 2021 (India), GDPR (EU), and HIPAA considerations (where applicable). For details on usage terms, see our <a href="terms.html">Terms & Conditions</a>.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Data We Collect -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>2. Data We Collect</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>2.1 Personal Data</h3>
+          <p>We collect:</p>
+          <ul>
+            <li><strong>Health Data</strong>: Symptoms or medicine names you input (e.g., "fever," "Paracetamol").</li>
+            <li><strong>Contact Information</strong>: Name, email, or phone number if provided (e.g., via contact form).</li>
+            <li><strong>Account Data</strong>: If applicable, login credentials or profile details.</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>2.2 Non-Personal Data</h3>
+          <p>We collect anonymized data, such as:</p>
+          <ul>
+            <li>Usage patterns (e.g., frequency of searches).</li>
+            <li>Device information (e.g., OS, browser type).</li>
+            <li>IP address and location data (approximate, not precise).</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>2.3 Voluntary Submission</h3>
+          <p>Most data is voluntarily submitted by you through App features like search or reminders. You can choose not to provide certain data, but this may limit functionality.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: How We Use Your Data -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>3. How We Use Your Data</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>3.1 Service Delivery</h3>
+          <p>We use your data to:</p>
+          <ul>
+            <li>Generate medicine suggestions based on symptoms.</li>
+            <li>Send reminders for medicine schedules.</li>
+            <li>Provide chatbot responses to health queries.</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>3.2 Improvement</h3>
+          <p>Anonymized data helps us improve algorithms, user experience, and App performance.</p>
+        </div>
+        <div class="subsection">
+          <h3>3.3 Communications</h3>
+          <p>We may use contact information to send updates, reminders, or respond to inquiries, per IT Rules, 2021.</p>
+        </div>
+        <div class="subsection">
+          <h3>3.4 Legal Compliance</h3>
+          <p>Data may be used to comply with legal obligations, such as responding to government requests under the IT Act, 2000.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: Data Sharing -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>4. Data Sharing</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>4.1 Third Parties</h3>
+          <p>We may share data with:</p>
+          <ul>
+            <li><strong>Service Providers</strong>: For hosting, analytics, or notifications (e.g., cloud providers).</li>
+            <li><strong>E-Pharmacies</strong>: If you access linked services, with your consent.</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>4.2 Legal Requirements</h3>
+          <p>We may disclose data if required by law (e.g., court orders) or to protect our rights.</p>
+        </div>
+        <div class="subsection">
+          <h3>4.3 Anonymized Data</h3>
+          <p>Anonymized data may be shared for research or analytics without identifying you.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 5: Data Security -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>5. Data Security</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>5.1 Security Measures</h3>
+          <p>We implement reasonable security practices, per Section 43A of the IT Act, 2000, including:</p>
+          <ul>
+            <li>Encryption for data transmission.</li>
+            <li>Access controls and secure servers.</li>
+            <li>Regular security audits.</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>5.2 Data Breach</h3>
+          <p>In case of a breach, we will notify affected users within 72 hours, per GDPR and IT Rules, 2021.</p>
+        </div>
+        <div class="subsection">
+          <h3>5.3 User Responsibility</h3>
+          <p>You are responsible for securing your device and account credentials.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 6: User Rights -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>6. User Rights</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>6.1 Access and Correction</h3>
+          <p>You may request access to or correction of your personal data by contacting us.</p>
+        </div>
+        <div class="subsection">
+          <h3>6.2 Deletion</h3>
+          <p>You may request data deletion, subject to legal retention requirements (e.g., IT Rules, 2021).</p>
+        </div>
+        <div class="subsection">
+          <h3>6.3 GDPR Rights</h3>
+          <p>EU users have additional rights under GDPR, including data portability and objection to processing.</p>
+        </div>
+        <div class="subsection">
+          <h3>6.4 Process</h3>
+          <p>Submit requests to support@medisuggester.com. We respond within 30 days, per GDPR.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 7: Data Retention -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>7. Data Retention</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>7.1 Retention Period</h3>
+          <p>We retain personal data only as long as necessary for App services or legal compliance (e.g., 5 years for tax records).</p>
+        </div>
+        <div class="subsection">
+          <h3>7.2 Deletion</h3>
+          <p>Data is deleted securely after retention periods or upon user request, per IT Rules, 2021.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 8: International Data Transfers -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>8. International Data Transfers</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>8.1 Global Access</h3>
+          <p>The App may transfer data to servers outside India (e.g., for cloud storage).</p>
+        </div>
+        <div class="subsection">
+          <h3>8.2 GDPR Compliance</h3>
+          <p>For EU users, transfers comply with GDPR Article 46 (e.g., Standard Contractual Clauses).</p>
+        </div>
+        <div class="subsection">
+          <h3>8.3 User Consent</h3>
+          <p>By using the App, you consent to international data transfers where necessary.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 9: Third-Party Links -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>9. Third-Party Links</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>9.1 External Services</h3>
+          <p>The App may link to third-party sites (e.g., e-pharmacies). Their privacy policies apply.</p>
+        </div>
+        <div class="subsection">
+          <h3>9.2 Responsibility</h3>
+          <p>We are not liable for third-party data practices. Review their policies before use.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 10: Changes to Privacy Policy -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>10. Changes to Privacy Policy</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>10.1 Updates</h3>
+          <p>We may update this Privacy Policy. Changes are posted here, and continued use constitutes acceptance.</p>
+        </div>
+        <div class="subsection">
+          <h3>10.2 Notification</h3>
+          <p>Significant changes are notified via email or in-app, per IT Rules, 2021.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 11: Grievance Redressal -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>11. Grievance Redressal</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>11.1 Grievance Officer</h3>
+          <p>Per IT Rules, 2021, our Grievance Officer is:</p>
+          <p>Name: [Grievance Officer Name]<br>Email: grievance@medisuggester.com<br>Address: [Your Company Address], India</p>
+        </div>
+        <div class="subsection">
+          <h3>11.2 Process</h3>
+          <p>Complaints are addressed within 15 days, as required by law.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="contact-form">
+      <h2>Contact Us</h2>
+      <form>
+        <input type="text" placeholder="Your Name" aria-label="Name" required>
+        <input type="email" placeholder="Your Email" aria-label="Email" required>
+        <textarea placeholder="Your Message" aria-label="Message" rows="5" required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+      <p style="margin-top: 12px;">Or reach us at: support@medisuggester.com | [Your Company Address], India</p>
+    </div>
+  </div>
+
+  <script>
+    // Toggle Accordion Sections
+    function toggleSection(element) {
+      const content = element.nextElementSibling;
+      const icon = element.querySelector('.play-icon');
+      const isOpen = content.style.display === 'block';
+
+      // Close all sections
+      document.querySelectorAll('.section-content').forEach(c => c.style.display = 'none');
+      document.querySelectorAll('.play-icon').forEach(i => i.classList.remove('open'));
+
+      // Toggle clicked section
+      if (!isOpen) {
+        content.style.display = 'block';
+        icon.classList.add('open');
+      }
+    }
+
+    // Apply Dark Mode
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
+
+    // Contact Form Submission (Placeholder)
+    document.querySelector('.contact-form form').addEventListener('submit', e => {
+      e.preventDefault();
+      alert('Thank you for your message! We will get back to you soon.');
+      e.target.reset();
+    });
+  </script>
+</body>
+</html>

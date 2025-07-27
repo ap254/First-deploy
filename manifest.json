@@ -1,0 +1,26 @@
+{
+  "name": "Medi Suggester",
+  "short_name": "MediSuggest",
+  "id": "/",
+  "start_url": "/mrkz123_updated_final_alt_fix.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#007bff",
+  "description": "Your offline health assistant for medicines, symptoms, and remedies.",
+  "orientation": "portrait-primary",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "https://i.ibb.co/d0sf0KfF/20250711-2123-Medi-Suggester-Logo-simple-compose-01jzx309qvft5t7k19bjwk5dtt.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://i.ibb.co/d0sf0KfF/20250711-2123-Medi-Suggester-Logo-simple-compose-01jzx309qvft5t7k19bjwk5dtt.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

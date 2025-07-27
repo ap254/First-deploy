@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms & Conditions - Medi Suggester</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Roboto', sans-serif; color: #333; background: #f5f5f5;
+      line-height: 1.6; padding: 20px; margin: 0; transition: background 0.3s, color 0.3s;
+    }
+    .container {
+      max-width: 900px; margin: 0 auto; background: #fff; padding: 24px;
+      border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h1 { font-size: 2.2rem; color: #4CAF50; margin-bottom: 16px; font-weight: 700; text-align: center; }
+    .last-updated { font-size: 0.95rem; color: #666; text-align: center; margin-bottom: 20px; }
+    body.dark-mode { background: #121212; color: #fff; }
+    body.dark-mode .container { background: #1e1e1e; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    body.dark-mode h1 { color: #81C784; }
+    body.dark-mode .last-updated { color: #bbb; }
+
+    /* Accordion Sections */
+    .section { margin-bottom: 12px; }
+    .section-header {
+      display: flex; align-items: center; gap: 12px; padding: 16px; background: #f9f9f9;
+      border-radius: 8px; cursor: pointer; transition: background 0.2s;
+    }
+    .section-header:hover { background: #e8f5e9; }
+    body.dark-mode .section-header { background: #2a2a2a; }
+    body.dark-mode .section-header:hover { background: #388E3C; }
+    .section-header h2 {
+      font-size: 1.3rem; font-weight: 500; color: #333; flex: 1;
+    }
+    body.dark-mode .section-header h2 { color: #fff; }
+    .play-icon {
+      font-size: 1.2rem; color: #4CAF50; transition: transform 0.3s;
+    }
+    .play-icon.open { transform: rotate(90deg); }
+    body.dark-mode .play-icon { color: #81C784; }
+    .section-content {
+      display: none; padding: 16px; background: #fff; border-radius: 0 0 8px 8px;
+      border-top: 1px solid #ddd; animation: slideIn 0.3s ease-out;
+      overflow: hidden;
+    }
+    body.dark-mode .section-content { background: #1e1e1e; border-color: #555; }
+    @keyframes slideIn {
+      from { max-height: 0; opacity: 0; }
+      to { max-height: 1000px; opacity: 1; }
+    }
+    .section-content p, .section-content li { font-size: 1rem; margin-bottom: 12px; }
+    .section-content ul { margin-left: 20px; list-style-type: disc; }
+    .section-content a { color: #4CAF50; text-decoration: none; }
+    .section-content a:hover { text-decoration: underline; }
+    body.dark-mode .section-content a { color: #81C784; }
+    .subsection { margin-top: 12px; }
+    .subsection h3 { font-size: 1.1rem; font-weight: 500; margin-bottom: 8px; }
+
+    /* Back Link and Contact Form */
+    .back-link {
+      display: inline-block; margin: 20px 0; font-size: 1rem; color: #4CAF50;
+    }
+    .back-link:hover { text-decoration: underline; }
+    body.dark-mode .back-link { color: #81C784; }
+    .contact-form {
+      margin-top: 24px; padding: 16px; background: #f9f9f9; border-radius: 8px;
+    }
+    body.dark-mode .contact-form { background: #2a2a2a; }
+    .contact-form h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .contact-form input, .contact-form textarea {
+      width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ddd;
+      border-radius: 8px; font-size: 1rem;
+    }
+    body.dark-mode .contact-form input, body.dark-mode .contact-form textarea {
+      border-color: #555; background: #333; color: #fff;
+    }
+    .contact-form button {
+      padding: 12px 24px; background: #4CAF50; color: #fff; border: none;
+      border-radius: 8px; font-size: 1rem; cursor: pointer; transition: background 0.2s;
+    }
+    .contact-form button:hover { background: #388E3C; }
+
+    /* Media Queries */
+    @media (max-width: 600px) {
+      .container { padding: 16px; }
+      h1 { font-size: 1.8rem; }
+      .section-header h2 { font-size: 1.2rem; }
+      .section-content p, .section-content li { font-size: 0.95rem; }
+      .subsection h3 { font-size: 1rem; }
+    }
+    @media (max-width: 400px) {
+      .container { padding: 12px; }
+      h1 { font-size: 1.6rem; }
+      .section-header h2 { font-size: 1.1rem; }
+      .play-icon { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Terms & Conditions</h1>
+    <p class="last-updated">Last Updated: June 21, 2025</p>
+    <a href="mrkz123_updated_final_alt_fix.html" class="back-link">← Back to App</a>
+
+    <!-- Section 1: Introduction -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>1. Introduction</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>1.1 Overview</h3>
+          <p>Welcome to Medi Suggester ("App"), a health-tech application designed to provide general medicine suggestions and reminders based on user inputs. By accessing or using the App, you agree to be bound by these Terms and Conditions ("Terms"). If you do not agree, please refrain from using the App.</p>
+        </div>
+        <div class="subsection">
+          <h3>1.2 Operator</h3>
+          <p>Medi Suggester is operated by [Your Company Name], a company registered under the Companies Act, 2013, in India. These Terms govern your use of the App, including its features, content, and services. The App is intended for informational purposes only and does not provide professional medical advice.</p>
+        </div>
+        <div class="subsection">
+          <h3>1.3 Agreement</h3>
+          <p>By using the App, you confirm that you have read, understood, and agreed to these Terms and our <a href="privacy.html">Privacy Policy</a>. These Terms apply to all users, including individuals, entities, or organizations accessing the App.</p>
+        </div>
+        <div class="subsection">
+          <h3>1.4 Scope</h3>
+          <p>These Terms cover all aspects of App usage, including but not limited to medicine suggestions, reminders, chatbot interactions, and third-party links. Additional policies (e.g., Privacy Policy) may apply to specific features.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Definitions -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>2. Definitions</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>2.1 Key Terms</h3>
+          <ul>
+            <li><strong>App</strong>: Refers to Medi Suggester, including its mobile and web versions.</li>
+            <li><strong>User</strong>: Any individual or entity accessing or using the App.</li>
+            <li><strong>Personal Data</strong>: Information relating to an identified or identifiable individual, as defined under the Information Technology Act, 2000.</li>
+            <li><strong>Medicine Suggestions</strong>: General recommendations provided by the App based on user inputs, not constituting medical advice.</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>2.2 Interpretation</h3>
+          <p>Unless otherwise stated, singular terms include the plural, and references to laws include amendments. Headings are for convenience and do not affect interpretation.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Eligibility -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>3. Eligibility</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>3.1 Age and Consent</h3>
+          <p>You must be at least 18 years old or have parental/guardian consent if under 18 to use the App. By using the App, you represent that you meet this requirement.</p>
+        </div>
+        <div class="subsection">
+          <h3>3.2 Jurisdiction</h3>
+          <p>You must reside in a jurisdiction where the App is legally accessible. Users outside India are responsible for ensuring compliance with local laws.</p>
+        </div>
+        <div class="subsection">
+          <h3>3.3 Legal Compliance</h3>
+          <p>You agree to comply with all applicable laws, including the Indian Contract Act, 1872, when using the App.</p>
+        </div>
+        <div class="subsection">
+          <h3>3.4 Account Responsibility</h3>
+          <p>If the App requires account creation, you are responsible for maintaining the confidentiality of your credentials and notifying us of unauthorized access.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: Medical Disclaimer -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>4. Medical Disclaimer</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>4.1 No Medical Advice</h3>
+          <p><strong>Medi Suggester is not a substitute for professional medical advice, diagnosis, or treatment.</strong> The App provides general information based on user inputs and publicly available data. Always consult a qualified healthcare provider before acting on suggestions.</p>
+        </div>
+        <div class="subsection">
+          <h3>4.2 Accuracy Limitations</h3>
+          <p>Suggestions are generated by algorithms and may not account for individual factors (e.g., allergies, drug interactions). For example, a suggestion of "Paracetamol" for fever does not consider user-specific conditions like liver issues.</p>
+        </div>
+        <div class="subsection">
+          <h3>4.3 Emergency Situations</h3>
+          <p>The App is not designed for medical emergencies. For severe symptoms (e.g., chest pain, difficulty breathing), contact emergency services (e.g., 108 in India) immediately.</p>
+        </div>
+        <div class="subsection">
+          <h3>4.4 Regulatory Compliance</h3>
+          <p>Suggestions comply with the Drugs and Cosmetics Act, 1940, and are limited to over-the-counter or commonly prescribed medications. Prescription drugs require a valid prescription, per Rule 65(1).</p>
+        </div>
+        <div class="subsection">
+          <h3>4.5 User Responsibility</h3>
+          <p>You assume full responsibility for actions based on App suggestions. [Your Company Name] is not liable for adverse health outcomes, such as side effects or incorrect treatment.</p>
+        </div>
+        <div class="subsection">
+          <h3>4.6 AI Constraints</h3>
+          <p>Vague or incorrect inputs (e.g., “head pain” vs. “migraine”) may lead to inaccurate suggestions. Users must provide detailed information to improve suggestion quality.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 5: User Responsibilities -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>5. User Responsibilities</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>5.1 Accurate Information</h3>
+          <p>You agree to provide accurate and truthful information (e.g., symptoms, medicine names) to ensure the App functions effectively.</p>
+        </div>
+        <div class="subsection">
+          <h3>5.2 Legal Compliance</h3>
+          <p>You must use the App in compliance with all applicable laws, including the Information Technology Act, 2000, and IT Rules, 2021.</p>
+        </div>
+        <div class="subsection">
+          <h3>5.3 Prohibited Activities</h3>
+          <p>You may not:</p>
+          <ul>
+            <li>Introduce viruses or malicious code.</li>
+            <li>Attempt unauthorized access or hacking.</li>
+            <li>Search for controlled substances or engage in illegal activities.</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>5.4 Non-Disruption</h3>
+          <p>You agree not to disrupt the App’s functionality or harm other users.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 6: Privacy and Data Protection -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>6. Privacy and Data Protection</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>6.1 Privacy Policy</h3>
+          <p>Our <a href="privacy.html">Privacy Policy</a> details how we collect, use, store, and protect your personal data, including symptoms and usage data.</p>
+        </div>
+        <div class="subsection">
+          <h3>6.2 Indian Compliance</h3>
+          <p>We comply with the Information Technology Act, 2000, and IT Rules, 2021, ensuring reasonable security practices under Section 43A.</p>
+        </div>
+        <div class="subsection">
+          <h3>6.3 International Compliance</h3>
+          <p>For EU users, we align with GDPR, offering rights like data access and deletion. HIPAA considerations apply for health data where relevant.</p>
+        </div>
+        <div class="subsection">
+          <h3>6.4 Data Consent</h3>
+          <p>By using the App, you consent to our data practices, including processing inputs to improve services.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 7: Intellectual Property -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>7. Intellectual Property</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>7.1 Ownership</h3>
+          <p>All content (text, logos, algorithms, designs) is owned by [Your Company Name] or licensors, protected under the Copyright Act, 1957.</p>
+        </div>
+        <div class="subsection">
+          <h3>7.2 License</h3>
+          <p>You are granted a limited, non-exclusive, non-transferable license for personal, non-commercial use of the App.</p>
+        </div>
+        <div class="subsection">
+          <h3>7.3 Restrictions</h3>
+          <p>You may not reproduce, distribute, modify, or reverse-engineer App content without written consent.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 8: Third-Party Links and Services -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>8. Third-Party Links and Services</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>8.1 External Links</h3>
+          <p>The App may link to third-party sites (e.g., e-pharmacies). We are not responsible for their content, accuracy, or practices.</p>
+        </div>
+        <div class="subsection">
+          <h3>8.2 User Risk</h3>
+          <p>Use third-party services at your own risk, subject to their terms. We are not liable for transactions or disputes.</p>
+        </div>
+        <div class="subsection">
+          <h3>8.3 Affiliate Disclosure</h3>
+          <p>We may receive commissions for certain links, disclosed per the Consumer Protection Act, 2019.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 9: Limitation of Liability -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>9. Limitation of Liability</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>9.1 General Exclusion</h3>
+          <p>[Your Company Name] is not liable for direct, indirect, incidental, or consequential damages from:</p>
+          <ul>
+            <li>Inaccurate suggestions.</li>
+            <li>Data loss or service interruptions.</li>
+            <li>Health outcomes from App use.</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>9.2 Legal Limits</h3>
+          <p>Liability is limited to the maximum extent permitted under the Consumer Protection Act, 2019.</p>
+        </div>
+        <div class="subsection">
+          <h3>9.3 Examples</h3>
+          <p>For instance, if a suggestion leads to an allergic reaction, we are not responsible due to the App’s informational nature.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 10: Indemnification -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>10. Indemnification</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>10.1 User Obligation</h3>
+          <p>You agree to indemnify [Your Company Name] against claims arising from:</p>
+          <ul>
+            <li>Misuse of the App.</li>
+            <li>Violation of Terms or laws.</li>
+            <li>Inaccurate inputs.</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>10.2 Legal Basis</h3>
+          <p>Indemnification is governed by the Indian Contract Act, 1872.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 11: Termination -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>11. Termination</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>11.1 Grounds for Termination</h3>
+          <p>We may suspend or terminate access for:</p>
+          <ul>
+            <li>Terms violations.</li>
+            <li>Harmful activities.</li>
+            <li>Legal or regulatory requirements.</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>11.2 Data Retention</h3>
+          <p>Post-termination, data is retained per our Privacy Policy and IT Rules, 2021.</p>
+        </div>
+        <div class="subsection">
+          <h3>11.3 User Rights</h3>
+          <p>You may request account deletion, subject to legal obligations.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 12: Governing Law and Dispute Resolution -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>12. Governing Law and Dispute Resolution</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>12.1 Governing Law</h3>
+          <p>These Terms are governed by the laws of India.</p>
+        </div>
+        <div class="subsection">
+          <h3>12.2 Arbitration</h3>
+          <p>Disputes shall be resolved through arbitration under the Arbitration and Conciliation Act, 1996, in [Your City], India, with one arbitrator.</p>
+        </div>
+        <div class="subsection">
+          <h3>12.3 Jurisdiction</h3>
+          <p>Courts in [Your City], India, have exclusive jurisdiction for legal proceedings.</p>
+        </div>
+        <div class="subsection">
+          <h3>12.4 International Disputes</h3>
+          <p>International users agree to Indian jurisdiction, subject to applicable laws (e.g., GDPR).</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 13: International Compliance -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>13. International Compliance</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>13.1 Local Laws</h3>
+          <p>International users must ensure compliance with local regulations. Suggestions may not align with non-Indian drug laws.</p>
+        </div>
+        <div class="subsection">
+          <h3>13.2 GDPR</h3>
+          <p>EU users have data rights (e.g., access, deletion) per GDPR, detailed in our Privacy Policy.</p>
+        </div>
+        <div class="subsection">
+          <h3>13.3 HIPAA</h3>
+          <p>Health data handling aligns with HIPAA where applicable, though the App is not a covered entity.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 14: Changes to Terms -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>14. Changes to Terms</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>14.1 Updates</h3>
+          <p>We may update Terms to reflect changes in the App or laws. Updates are posted here, and continued use constitutes acceptance.</p>
+        </div>
+        <div class="subsection">
+          <h3>14.2 Notification</h3>
+          <p>Significant changes are notified via email or in-app, per IT Rules, 2021.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 15: App Features and Limitations -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>15. App Features and Limitations</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>15.1 Features</h3>
+          <p>The App offers:</p>
+          <ul>
+            <li>AI-driven medicine suggestions.</li>
+            <li>Medicine reminders.</li>
+            <li>Chatbot for health queries.</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>15.2 Limitations</h3>
+          <p>Features are provided "as is" without warranties. The App does not support emergency services or real-time consultations.</p>
+        </div>
+        <div class="subsection">
+          <h3>15.3 Service Availability</h3>
+          <p>We strive for uninterrupted service but are not liable for downtime due to maintenance or technical issues.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 16: User-Generated Content -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>16. User-Generated Content</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>16.1 License</h3>
+          <p>You grant [Your Company Name] a non-exclusive, worldwide, royalty-free license to use inputs (e.g., symptoms) for App services, per IT Act, 2000.</p>
+        </div>
+        <div class="subsection">
+          <h3>16.2 Responsibility</h3>
+          <p>You are responsible for the accuracy and legality of your inputs.</p>
+        </div>
+        <div class="subsection">
+          <h3>16.3 Moderation</h3>
+          <p>We may remove content violating Terms or laws.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 17: Force Majeure -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>17. Force Majeure</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>17.1 Exemption</h3>
+          <p>We are not liable for failures due to events beyond our control (e.g., natural disasters, government actions), per Indian Contract Act, 1872.</p>
+        </div>
+        <div class="subsection">
+          <h3>17.2 Notification</h3>
+          <p>We will notify users of significant disruptions where feasible.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 18: Notifications and Communications -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>18. Notifications and Communications</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>18.1 Methods</h3>
+          <p>Notifications may be sent via email, in-app messages, or other methods for reminders, updates, or grievances.</p>
+        </div>
+        <div class="subsection">
+          <h3>18.2 Opt-Out</h3>
+          <p>You may opt out of non-essential communications via App settings, per IT Rules, 2021.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 19: Grievance Redressal -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>19. Grievance Redressal</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>19.1 Grievance Officer</h3>
+          <p>Per IT Rules, 2021, our Grievance Officer is:</p>
+          <p>Name: [Grievance Officer Name]<br>Email: grievance@medisuggester.com<br>Address: [Your Company Address], India</p>
+        </div>
+        <div class="subsection">
+          <h3>19.2 Process</h3>
+          <p>Complaints are addressed within 15 days, as required by law.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 20: Miscellaneous -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="play-icon">▶</span>
+        <h2>20. Miscellaneous</h2>
+      </div>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>20.1 Severability</h3>
+          <p>If any provision is invalid, remaining provisions remain enforceable.</p>
+        </div>
+        <div class="subsection">
+          <h3>20.2 Waiver</h3>
+          <p>Non-enforcement of rights is not a waiver.</p>
+        </div>
+        <div class="subsection">
+          <h3>20.3 Entire Agreement</h3>
+          <p>These Terms and Privacy Policy constitute the full agreement.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="contact-form">
+      <h2>Contact Us</h2>
+      <form>
+        <input type="text" placeholder="Your Name" aria-label="Name" required>
+        <input type="email" placeholder="Your Email" aria-label="Email" required>
+        <textarea placeholder="Your Message" aria-label="Message" rows="5" required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+      <p style="margin-top: 12px;">Or reach us at: support@medisuggester.com | [Your Company Address], India</p>
+    </div>
+  </div>
+
+  <script>
+    // Toggle Accordion Sections
+    function toggleSection(element) {
+      const content = element.nextElementSibling;
+      const icon = element.querySelector('.play-icon');
+      const isOpen = content.style.display === 'block';
+
+      // Close all sections
+      document.querySelectorAll('.section-content').forEach(c => c.style.display = 'none');
+      document.querySelectorAll('.play-icon').forEach(i => i.classList.remove('open'));
+
+      // Toggle clicked section
+      if (!isOpen) {
+        content.style.display = 'block';
+        icon.classList.add('open');
+      }
+    }
+
+    // Apply Dark Mode
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
+
+    // Contact Form Submission (Placeholder)
+    document.querySelector('.contact-form form').addEventListener('submit', e => {
+      e.preventDefault();
+      alert('Thank you for your message! We will get back to you soon.');
+      e.target.reset();
+    });
+  </script>
+</body>
+</html>
